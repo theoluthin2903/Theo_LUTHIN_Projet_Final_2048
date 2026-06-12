@@ -68,6 +68,7 @@ void resetConsole(void) {
 // Affiche le plateau et le score avec une bordure et des couleurs.
 // La grille est dessinée ligne par ligne avec des cellules de largeur fixe.
 void printBoard(int size, int *board, int score) {
+    const int cellWidth = 7;
     system("cls"); // Efface l'écran de la console.
     WORD borderColor = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
     if (hConsole != INVALID_HANDLE_VALUE) {
@@ -79,7 +80,7 @@ void printBoard(int size, int *board, int score) {
         SetConsoleTextAttribute(hConsole, borderColor);
     }
     for (int j = 0; j < size; j++) {
-        printf("+-----");
+        printf("+%.*s", cellWidth, "-------");
     }
     printf("+\n");
 
@@ -93,8 +94,10 @@ void printBoard(int size, int *board, int score) {
                 sprintf(text, "%d", value); // Affiche la valeur de la tuile.
             }
             int len = (int)strlen(text);
-            int left = (5 - len) / 2;
-            int right = 5 - len - left;
+            int padding = cellWidth - len;
+            if (padding < 0) padding = 0;
+            int left = padding / 2;
+            int right = padding - left;
 
             if (hConsole != INVALID_HANDLE_VALUE) {
                 SetConsoleTextAttribute(hConsole, borderColor);
@@ -114,7 +117,7 @@ void printBoard(int size, int *board, int score) {
         }
         printf("|\n");
         for (int j = 0; j < size; j++) {
-            printf("+-----");
+            printf("+%.*s", cellWidth, "-------");
         }
         printf("+\n");
     }
