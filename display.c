@@ -23,21 +23,32 @@ static BOOL WINAPI CtrlHandler(DWORD ctrlType) {
 }
 
 // Choisit une couleur pour chaque valeur de tuile.
-// Retourne un attribut de couleur Windows adapté à la valeur.
+// Retourne un attribut de couleur Windows adapté à la valeur avec fond coloré.
 static WORD getTileColor(int value) {
+    WORD white = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
+    WORD black = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+    WORD cyan = BACKGROUND_GREEN | BACKGROUND_BLUE;
+    WORD magenta = BACKGROUND_RED | BACKGROUND_BLUE;
+    WORD yellow = BACKGROUND_RED | BACKGROUND_GREEN;
+    WORD darkBlue = BACKGROUND_BLUE;
+    WORD darkRed = BACKGROUND_RED;
+    WORD darkGreen = BACKGROUND_GREEN;
+    WORD white_bg = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+    
     switch (value) {
-        case 2: return FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-        case 4: return FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-        case 8: return FOREGROUND_RED | FOREGROUND_INTENSITY;
-        case 16: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-        case 32: return FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-        case 64: return FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-        case 128: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-        case 256: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-        case 512: return FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-        case 1024: return FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-        case 2048: return FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-        default: return FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        case 0: return white;  // fond vert foncé, texte blanc clair
+        case 2: return darkBlue | white;  // fond bleu foncé, texte blanc clair
+        case 4: return darkGreen | white;  // fond vert foncé, texte blanc clair
+        case 8: return darkRed | white;  // fond rouge foncé, texte blanc clair
+        case 16: return yellow | FOREGROUND_RED;  // fond jaune clair, texte rouge foncé
+        case 32: return magenta | white;  // fond magenta foncé, texte blanc clair
+        case 64: return cyan | FOREGROUND_BLUE;  // fond cyan clair, texte bleu foncé
+        case 128: return magenta | white;  // fond magenta foncé, texte blanc clair
+        case 256: return yellow | FOREGROUND_RED;  // fond jaune clair, texte rouge foncé
+        case 512: return white_bg | FOREGROUND_BLUE;  // fond blanc clair, texte bleu foncé
+        case 1024: return yellow | FOREGROUND_BLUE;  // fond jaune clair, texte bleu foncé
+        case 2048: return yellow | FOREGROUND_RED | FOREGROUND_INTENSITY;  // fond jaune clair, texte rouge intense
+        default: return white_bg | black;
     }
 }
 
@@ -66,7 +77,7 @@ void resetConsole(void) {
 }
 
 // Affiche le plateau et le score avec une bordure et des couleurs.
-// La grille est dessinée ligne par ligne avec des cellules de largeur fixe.
+// La grille est dessinée ligne par ligne avec des cellules de largeur fixe avec fonds colorés.
 void printBoard(int size, int *board, int score) {
     const int cellWidth = 7;
     system("cls"); // Efface l'écran de la console.
