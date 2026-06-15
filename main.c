@@ -6,36 +6,65 @@
 #include <windows.h>
 #include "game.h"
 
+static int showWelcomeMenu(void) {
+    char line[64];
+
+    while (1) {
+        printf("=== Bienvenue sur 2048 ! ===\n");
+        printf("1. Nouvelle partie\n");
+        printf("2. Charger une sauvegarde\n");
+        printf("3. Quitter\n");
+        printf("Choix : ");
+
+        if (!fgets(line, sizeof(line), stdin)) {
+            return 3;
+        }
+
+        int i = 0;
+        while (line[i] != '\0' && isspace((unsigned char)line[i])) {
+            i++;
+        }
+
+        if (line[i] == '1' && (line[i + 1] == '\0' || line[i + 1] == '\n')) {
+            return 1;
+        }
+        if (line[i] == '2' && (line[i + 1] == '\0' || line[i + 1] == '\n')) {
+            return 2;
+        }
+        if (line[i] == '3' && (line[i + 1] == '\0' || line[i + 1] == '\n')) {
+            return 3;
+        }
+
+        printf("Choix invalide. Veuillez entrer 1, 2 ou 3.\n\n");
+    }
+}
+
 int main(void) {
     int gridSize = 0;
     int *board = NULL; // Plateau représenté par un tableau 1D
     int score = 0;
     int input;
     int gameOver = 0;
-    int ch;
     char line[64];
     int victoryDisplayed = 0;  // Flag pour tracker si la victoire a été affichée
 
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);  
 
-    // Active l'encodage UTF-8 pour afficher correctement les accents.
-    printf("Charger la dernière sauvegarde ? (O/N) : ");
-    if (fgets(line, sizeof(line), stdin)) {
-        int i = 0;
-        while (line[i] != '\0' && isspace((unsigned char)line[i])) {
-            i++;
-        }
-        if (line[i] != '\0' && line[i] != '\n' && (line[i] == 'o' || line[i] == 'O')) {
-            if (!loadGame(&gridSize, &board, &score)) {
-                printf("Nouvelle partie en cours.\n");
-                gridSize = 0;
-            }
-        }
-        // Sinon c'est non et on continue
+    initConsole();
+
+    int menuChoice = showWelcomeMenu();
+    if (menuChoice == 3) {
+        resetConsole();
+        return 0;
     }
 
-    initConsole();
+    if (menuChoice == 2) {
+        if (!loadGame(&gridSize, &board, &score)) {
+            printf("Impossible de charger la sauvegarde. Nouvelle partie en cours.\n");
+            gridSize = 0;
+        }
+    }
 
     // Si aucune sauvegarde n'a été chargée, démarrer une nouvelle partie.
     if (board == NULL) {
@@ -92,9 +121,11 @@ int main(void) {
         if (hasWon) {
             victoryDisplayed = 1;
             printf("Félicitations ! Vous avez atteint 2048 !\n");
+            printf("============================\n");
             printf("Appuyez sur ENTRÉE pour continuer à jouer\n");
             printf("Appuyez sur ÉCHAP pour quitter\n");
             printf("Appuyez sur E pour sauvegarder et quitter\n");
+            printf("============================\n");
             
             int victoryHandled = 0;
             while (!victoryHandled) {
@@ -128,7 +159,7 @@ int main(void) {
         }
 
         if (gameOver) {
-            printf("GAME OVER! Final Score: %d\n", score);
+            printf("GAME OVER! Score final : %d\n", score);
             printf("Appuyez sur R pour rejouer ou Échap pour quitter\n");
 
             while (1) {
