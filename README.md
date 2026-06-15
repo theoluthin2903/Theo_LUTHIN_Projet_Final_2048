@@ -68,10 +68,10 @@ gcc main.c board.c moves.c display.c save.c -o 2048
 2. Choisir la taille de la grille
 3. Utiliser les touches du clavier pour déplacer les tuiles :
 
-   * ↑ ou Z Haut
-   * ↓ ou S Bas
-   * ← ou Q Gauche
-   * → ou D Droite
+   * ↑ ou Z : déplacement vers le haut
+   * ↓ ou S : déplacement vers le bas
+   * ← ou Q : déplacement vers la gauche
+   * → ou D : déplacement vers la droite
 4. Fusionner les tuiles de même valeur pour augmenter le score
 5. Atteindre **2048** pour gagner 🎉
 
